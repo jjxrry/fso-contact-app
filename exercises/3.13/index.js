@@ -49,12 +49,12 @@ app.post('/api/persons', (req, resp) => {
     })
   }
 
-  const newContact = new Contacts({
+  const newContact = {
     id: generateId(),
     name: body.name,
     number: body.number,
     date: new Date(),
-  })
+  }
 
   if(persons.find(c => c.name === body.name)) {
     return resp.status(400).json({
@@ -63,7 +63,7 @@ app.post('/api/persons', (req, resp) => {
   }
 
   newContact.save().then(savedContact => {
-    resp.json(savedContact)
+    response.json(savedContact)
   })
 })
 
