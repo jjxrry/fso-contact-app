@@ -1,43 +1,34 @@
 const express = require('express')
 const app = express()
-// const morgan = require('morgan')
+const morgan = require('morgan')
 const cors = require('cors')
 require('dotenv').config()
 
 const Contacts = require('./models/contacts')
 
-//MIDDLEWARE
-const requestLogger = (req, resp, next) => {
-  console.log('Method:', req.method)
-  console.log('Path:  ', req.path)
-  console.log('Body:  ', req.body)
+const requestLogger = (request, response, next) => {
+  console.log('Method:', request.method)
+  console.log('Path:  ', request.path)
+  console.log('Body:  ', request.body)
   console.log('---')
   next()
 }
 
-const unknownEndpoint = (req, resp) => {
-  resp.status(404).send({ error: 'unknown endpoint' })
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
 }
-
-const errorHandler = (error, req, resp, next) => {
-  console.log(error.message)
-
-  if (error.name === `CastError`) {
-    return resp.status(400).send({error: `malfomed id`})
-  }
-}
-
-// morgan.token('objectContent', function(req, resp) {
-//   return JSON.stringify(req.body)
-// })
-// app.use(morgan(':method :url :status :res[content-length] - :response-time ms :objectContent'))
-
-//MIDDLEWARE END
 
 app.use(cors())
 app.use(requestLogger)
 app.use(express.json())
 app.use(express.static('dist'))
+
+
+morgan.token('objectContent', function(req, resp) {
+  return JSON.stringify(req.body)
+})
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :objectContent'))
+
 
 let persons = [
 ]
@@ -105,7 +96,6 @@ app.delete('/api/persons/:id', (req, resp) => {
 })
 
 app.use(unknownEndpoint)
-app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
