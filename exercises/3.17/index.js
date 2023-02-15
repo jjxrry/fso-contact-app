@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const morgan = require('morgan')
+// const morgan = require('morgan')
 const cors = require('cors')
 require('dotenv').config()
 
@@ -27,10 +27,10 @@ const errorHandler = (error, req, resp, next) => {
   }
 }
 
-morgan.token('objectContent', function(req, resp) {
-  return JSON.stringify(req.body)
-})
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :objectContent'))
+// morgan.token('objectContent', function(req, resp) {
+//   return JSON.stringify(req.body)
+// })
+// app.use(morgan(':method :url :status :res[content-length] - :response-time ms :objectContent'))
 
 //MIDDLEWARE END
 
@@ -39,7 +39,8 @@ app.use(requestLogger)
 app.use(express.json())
 app.use(express.static('dist'))
 
-let persons = []
+let persons = [
+]
 
 const generateId = () => {
   const newId = Math.floor(Math.random() * 1000)
@@ -81,31 +82,18 @@ app.get('/api/persons', (req, resp) => {
   })
 })
 
-app.get('/info', (req, resp, next) => {
-  Contacts.countDocuments()
-    .then(length => {
-      if (length) {
-        resp.send(
-          `<p>Phonebook has info for ${length} people</p>
-          <p>${new Date()}</p>`
-        )
-      } else {
-        resp.status(404).end()
-      }
-    })
-    .catch(error => next(error))
+app.get('/info', (req, resp) => {
+  const length = persons.length
+  resp.send(
+  `<p>Phonebook has info for ${length} people</p>
+  <p>${new Date()}</p>`
+  )
 })
 
-app.get('/api/persons/:id', (req, resp, next) => {
-  Contacts.findById(req.params.id)
-  .then(contact => {
-    if (contact) {
-      resp.json(contact)
-    } else {
-      resp.status(404).end()
-    }
+app.get('/api/persons/:id', (req, resp) => {
+  Contacts.findById(request.params.id).then(contact => {
+    resp.json(contact)
   })
-  .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (req, resp) => {
