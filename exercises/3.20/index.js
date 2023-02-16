@@ -107,6 +107,11 @@ app.delete('/api/persons/:id', (req, resp) => {
 app.put('/api/persons/:id',(req, resp, next) => {
   const {name, number} = req.body
 
+  // const contact = {
+  //   name: body.name,
+  //   number: body.number,
+  // }
+
   Contacts.findByIdAndUpdate(
     req.params.id, 
     {name, number}, 

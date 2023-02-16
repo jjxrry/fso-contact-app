@@ -19,16 +19,7 @@ const contactSchema = new mongoose.Schema({
             minLength: 3,
             required: true,
         },
-        number: {
-            type: String,
-            validate: {
-                validator: (n) => {
-                    return /\d{3}-\d{7}/.test(n) || /\d{2}-\d{8}/.test(n)
-                },
-                message: props => `${props.value} is not a valid phone number!`
-            },
-            required: [true, 'Contact number missing']
-        },
+        number: String,
         id: Number,
     })
 
